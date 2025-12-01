@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
+
 import './App.css'
 
+import {Box, Button, Container,} from "@mui/material";
+
 function App() {
-  const [count, setCount] = useState(0)
+    return (
+        <Box >
+            {/* 背景オーバーレイ */}
+            <Box
+                sx={{
+                    position: "absolute",
+                    inset: 0,
+                    backgroundImage: "url(../public/images/ooga1.png)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    opacity:0.2,   // ← イマジナリー効果
+                    zIndex: -1,
+                }}
+            />
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+            {/* 通常コンテンツ */}
+            <Box sx={{ position: "relative", zIndex: 1 }}>
+                <h1 >太神先生と一緒にお勉強しよう</h1>
+                <Button　variant="contained">勉強する</Button>
+                <br/>
+                <br/>
+                <Button　variant="text">勉強しない</Button>
+            </Box>
+        </Box>
+    )
 }
-
 export default App
