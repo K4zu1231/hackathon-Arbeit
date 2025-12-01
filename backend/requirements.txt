@@ -1,2 +1,5 @@
 fastapi
 uvicorn[standard]
+mediapipe
+opencv-python
+websockets
