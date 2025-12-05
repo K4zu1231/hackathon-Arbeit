@@ -1,62 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    /* ページ全体にビデオを表示 */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-    }
-    video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 90%;
-      height: auto;
-      object-fit: contain; /* 画面いっぱいに表示、縦横比維持 */
-      transform: translate(-50%, -50%);
-    }
-    img#teacher {
-      position: absolute;
-      top: 20px;   /* 好きな位置に調整 */
-      left: 20px;
-      width: 200px; /* 画像サイズ */
-      z-index: 10;  /* ビデオより前に表示 */
-    }
-  </style>
-</head>
-<body>
-<video id="video" autoplay playsinline></video>
-<img id="teacher" src="teacher.png" style="display:none;">
-<script>
-const ws = new WebSocket("ws://localhost:8000/ws");
-const video = document.getElementById("video");
-const teacher = document.getElementById("teacher");
-
-navigator.mediaDevices.getUserMedia({video: true}).then(stream => {
-  video.srcObject = stream;
-});
-
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  teacher.style.display = data.show_teacher ? "block" : "none";
-};
-
-function sendFrame() {
-  const canvas = document.createElement("canvas");
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(video, 0, 0);
-  const imgData = canvas.toDataURL("image/jpeg");
-  ws.send(imgData);
-  requestAnimationFrame(sendFrame);
-}
-
-video.onplaying = () => sendFrame();
-</script>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React + Vite</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

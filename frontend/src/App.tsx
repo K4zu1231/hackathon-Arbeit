@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route, Link } from "react-router-dom";
+import Notes from "./components/Notes";
+import PomodoroTimer from "./components/PomodoroTimer";
+import StudyLog from "./components/StudyLog";
+import CameraApp from "./CameraApp";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+            <h1>📚 勉強管理ツール</h1>
 
-export default App
+            <PomodoroTimer />
+            <StudyLog />
+            <Notes />
+
+            {/* カメラページへのリンク */}
+            <Link
+              to="/camera"
+              style={{
+                display: "inline-block",
+                marginTop: 20,
+                padding: "10px 20px",
+                background: "#007bff",
+                color: "white",
+                borderRadius: 8,
+                textDecoration: "none",
+              }}
+            >
+              🎥 AI先生カメラを開く
+            </Link>
+          </div>
+        }
+      />
+
+      {/* カメラ画面 */}
+      <Route path="/camera" element={<CameraApp />} />
+    </Routes>
+  );
+}

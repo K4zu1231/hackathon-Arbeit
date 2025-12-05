@@ -67,7 +67,7 @@ async def websocket_endpoint(websocket: WebSocket):
             else:
                 down_start = None
 
-            # クライアントへ送信
+            # 画面に送信
             for ws in clients:
                 try:
                     await ws.send_json({"show_teacher": looking_down})
