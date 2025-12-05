@@ -81,23 +81,6 @@ export default function CameraApp() {
           }}
         />
       )}
-
-      <a
-        href="/"
-        style={{
-          position: "absolute",
-          bottom: 20,
-          left: 20,
-          padding: "10px 20px",
-          background: "rgba(0,0,0,0.7)",
-          color: "white",
-          borderRadius: 8,
-          textDecoration: "none",
-          zIndex: 20,
-        }}
-      >
-        ← 勉強ツールへ戻る
-      </a>
     </div>
   );
 }
