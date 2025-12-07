@@ -1,0 +1,42 @@
+import React, { useRef, useState, useCallback } from 'react';
+import Timer from '../components/Timer';
+import { FullscreenButton } from '../components/FullScreenButton';
+import { useCamera } from '../components/useCamera';
+import useWebSocket from '../components/useWebSocket';
+import './StudyPage.css';
+
+const VideoStreamComponent: React.FC = () => {
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const wsRef = useRef<WebSocket | null>(null);
+
+    const [showTeacher, setShowTeacher] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    useCamera(videoRef);
+    useWebSocket(wsRef, setShowTeacher);
+
+    const toggleFullscreen = useCallback(() => {
+        const element = containerRef.current;
+        if (!document.fullscreenElement) {
+            element?.requestFullscreen?.();
+            setIsFullscreen(true);
+        } else {
+            document.exitFullscreen?.();
+            setIsFullscreen(false);
+        }
+    }, []);
+
+    return (
+        <div ref={containerRef} className="video-container">
+            <video ref={videoRef} autoPlay playsInline muted />
+            {showTeacher && <img src="teacher.png" alt="Teacher" className="teacher-overlay" />}
+            <div className="timer-overlay">
+                <Timer />
+            </div>
+            <FullscreenButton isFullscreen={isFullscreen} onClick={toggleFullscreen} />
+        </div>
+    );
+};
+
+export default VideoStreamComponent;
