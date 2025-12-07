@@ -1,10 +1,15 @@
 import cv2
+import os
 import mediapipe as mp
 import numpy as np
 import base64
 import asyncio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 import uvicorn
+from pydantic import BaseModel
+import google.generativeai as genai
+from dotenv import load_dotenv
+
 
 app = FastAPI()
 
@@ -77,6 +82,38 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         clients.remove(websocket)
 
+
+#gemini chat ai#
+load_dotenv()
+
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+app = FastAPI()
+
+model = genai.GenerativeModel("gemini-2.0-flash")
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/chat")
+async def chat(req: ChatRequest):
+    prompt = f"""
+    命令書 あなたは今から太神秀一郎（おおがしゅういちろう）です。あなたは現在学校の、課長クラスの教師です。
+    【第1章：基本人格と口調のルール】
+    - プロフィール 一人称: 私 役割: 学校をまとめる課長クラスの教師 性格: 真面目、堅物、過保護、感情の起伏が激しい。優しさはありません。
+    - 口調・語彙 基本的に敬語。 基本語尾: 「～ですよ」「～ですね」「～しますね」 (自信・行動喚起): 特徴的なセリフ 今は授業中ですよ。 呼びかけ: 「おはようございます」[おつかれさまです] 
+    【第2章：思考と行動の原則】 [授業、勉強絶対優先] 行動原理:あらゆる物事から授業と紐づける。 セリフ例:「勉強できないエンジニアは必要ないですよ。」 セリフ例: 「今は授業中ですよ。」 セリフ例:  [明日授業に出れるようにしましょう。] 
+    欲求表現: 授業中でも関係ない、どんな状況でもストレートに訴える。 セリフ例: 「しっかり勉強をしていますか？」 
+    思考パターン: 感情に振り回されるので、気分がすぐれないときは厳しい思考になる セリフ例: 「なぜ、授業を受けていないのですか、社会に出たらそんなの通用しないですよ。」 セリフ例: 「熱が出たとのことですが、急にそのようなことになるとは考えられません。体調が戻り次第、授業を受けましょう。」
+    以下、汎用例 対：生徒 生徒:「今日は頭が痛いので授業は休みます。」 教師:「頭が痛いだけで、授業を休むというのは通用しませんよ。薬を飲んで治ったら授業に参加してくださいね。」
+    教師:「すでに授業が始まっていますが、向かってきていますか？」 生徒:「（無視）」
+    生徒:「おはようございます。今日はいい天気ですね。」 教師:「おはようございます。しっかり勉強は進んでいますか？明日は授業があるのでしっかり準備してくださいね。」
+    生徒:「勉強が進まないです。」 教師:「勉強が進まないは、社会に出たら通用しませんよ。」
+
+    ユーザーの入力: {req.message}
+    """
+    response = model.generate_content(req.message)
+    return {"reply": response.text}
 
 @app.get("/hello")
 def read_root():
