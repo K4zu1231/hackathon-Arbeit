@@ -1,0 +1,36 @@
+
+.timer {
+    font-size: 2rem;
+    color: white;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 15;
+}
+
+.draggable-timer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 180px;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 8px;
+    padding: 4px;
+    z-index: 100;
+    cursor: grab;
+    user-select: none;
+}
+
+.draggable-timer.minimized {
+    height: auto;
+    width: 100px;
+    padding: 2px;
+}
+
+.drag-handle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    padding: 2px 4px;
+}
