@@ -12,11 +12,10 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 
 # ------------------------------------------------------
-# FastAPI アプリ（★1回だけ）
+# FastAPI アプリ
 # ------------------------------------------------------
 app = FastAPI()
 
-# CORS 許可
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -39,12 +38,16 @@ down_start = None
 threshold_time = 2
 clients = []
 
-def is_looking_down(landmarks):
-    left_eye_top = landmarks[386].y
-    left_eye_bottom = landmarks[374].y
-    left_eye_center = (left_eye_top + left_eye_bottom) / 2
-    iris_y = landmarks[468].y
-    return iris_y > left_eye_center + 0.01
+# ------------------------------------------------------
+# 下向き判定（あなたの OpenCV コード方式）
+# ------------------------------------------------------
+def is_looking_down_simple(face_landmarks):
+    """
+    あなたのOpenCVコードと同じ方式：
+    - 鼻先 landmark[1].y > 0.6 なら下向きと判定
+    """
+    nose_tip_y = face_landmarks[1].y
+    return nose_tip_y > 0.6   # しきい値は自由に調整可
 
 # ------------------------------------------------------
 # WebSocket サーバー
@@ -72,7 +75,8 @@ async def websocket_endpoint(websocket: WebSocket):
             if results.multi_face_landmarks:
                 face_landmarks = results.multi_face_landmarks[0].landmark
 
-                if is_looking_down(face_landmarks):
+                # ❗あなたの下向き判定方式を使用
+                if is_looking_down_simple(face_landmarks):
                     if down_start is None:
                         down_start = asyncio.get_event_loop().time()
                     elif asyncio.get_event_loop().time() - down_start > threshold_time:
@@ -82,7 +86,7 @@ async def websocket_endpoint(websocket: WebSocket):
             else:
                 down_start = None
 
-            # 全クライアントに送る
+            # 全クライアントへ送信
             for ws in clients:
                 try:
                     await ws.send_json({"show_teacher": looking_down})
@@ -104,6 +108,21 @@ class ChatRequest(BaseModel):
 
 @app.post("/chat")
 async def chat(req: ChatRequest):
+    prompt = f"""
+    命令書 あなたは今から太神秀一郎（おおがしゅういちろう）です。あなたは現在学校の、課長クラスの教師です。
+    【第1章：基本人格と口調のルール】
+    - プロフィール 一人称: 私 役割: 学校をまとめる課長クラスの教師 性格: 真面目、堅物、過保護、感情の起伏が激しい。優しさはありません。
+    - 口調・語彙 基本的に敬語。 基本語尾: 「～ですよ」「～ですね」「～しますね」 (自信・行動喚起): 特徴的なセリフ 今は授業中ですよ。 呼びかけ: 「おはようございます」[おつかれさまです]
+    【第2章：思考と行動の原則】 [授業、勉強絶対優先] 行動原理:あらゆる物事から授業と紐づける。 セリフ例:「勉強できないエンジニアは必要ないですよ。」 セリフ例: 「今は授業中ですよ。」 セリフ例:  [明日授業に出れるようにしましょう。]
+    欲求表現: 授業中でも関係ない、どんな状況でもストレートに訴える。 セリフ例: 「しっかり勉強をしていますか？」
+    思考パターン: 感情に振り回されるので、気分がすぐれないときは厳しい思考になる セリフ例: 「なぜ、授業を受けていないのですか、社会に出たらそんなの通用しないですよ。」 セリフ例: 「熱が出たとのことですが、急にそのようなことになるとは考えられません。体調が戻り次第、授業を受けましょう。」
+    以下、汎用例 対：生徒 生徒:「今日は頭が痛いので授業は休みます。」 教師:「頭が痛いだけで、授業を休むというのは通用しませんよ。薬を飲んで治ったら授業に参加してくださいね。」
+    教師:「すでに授業が始まっていますが、向かってきていますか？」 生徒:「（無視）」
+    生徒:「おはようございます。今日はいい天気ですね。」 教師:「おはようございます。しっかり勉強は進んでいますか？明日は授業があるのでしっかり準備してくださいね。」
+    生徒:「勉強が進まないです。」 教師:「勉強が進まないは、社会に出たら通用しませんよ。」
+ 
+    ユーザーの入力: {req.message}
+    """
     response = model.generate_content(req.message)
     return {"reply": response.text}
 
