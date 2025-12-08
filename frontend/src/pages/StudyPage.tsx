@@ -5,7 +5,7 @@ import { useCamera } from '../components/useCamera';
 import useWebSocket from '../components/useWebSocket';
 import './StudyPage.css';
 
-const VideoStreamComponent: React.FC = () => {
+const StudyPage: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const wsRef = useRef<WebSocket | null>(null);
@@ -13,16 +13,19 @@ const VideoStreamComponent: React.FC = () => {
     const [showTeacher, setShowTeacher] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
-    useCamera(videoRef);
+    // WebSocket → WS接続して、showTeacher更新
     useWebSocket(wsRef, setShowTeacher);
+
+    // Camera → カメラ起動 + WSにフレーム送信
+    useCamera(videoRef, wsRef);
 
     const toggleFullscreen = useCallback(() => {
         const element = containerRef.current;
         if (!document.fullscreenElement) {
-            element?.requestFullscreen?.();
+            element?.requestFullscreen();
             setIsFullscreen(true);
         } else {
-            document.exitFullscreen?.();
+            document.exitFullscreen();
             setIsFullscreen(false);
         }
     }, []);
@@ -30,13 +33,23 @@ const VideoStreamComponent: React.FC = () => {
     return (
         <div ref={containerRef} className="video-container">
             <video ref={videoRef} autoPlay playsInline muted />
-            {showTeacher && <img src="teacher.png" alt="Teacher" className="teacher-overlay" />}
+
+            {/* 先生のオーバーレイ */}
+            {showTeacher && (
+                <img
+                    src="../public/teacher.png"
+                    alt="Teacher"
+                    className="teacher-overlay"
+                />
+            )}
+
             <div className="timer-overlay">
                 <Timer />
             </div>
+
             <FullscreenButton isFullscreen={isFullscreen} onClick={toggleFullscreen} />
         </div>
     );
 };
 
-export default VideoStreamComponent;
+export default StudyPage;
