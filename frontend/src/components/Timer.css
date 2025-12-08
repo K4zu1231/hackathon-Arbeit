@@ -9,16 +9,14 @@
 }
 
 .draggable-timer {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 180px;
+    position: fixed;
+
     background-color: rgba(255,255,255,0.9);
     border-radius: 8px;
     padding: 4px;
-    z-index: 100;
-    cursor: grab;
     user-select: none;
+    cursor: grab;
+    z-index: 99999; /* カメラ動画より前面 */
 }
 
 .draggable-timer.minimized {

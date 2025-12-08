@@ -5,7 +5,6 @@ import Dialog from '@mui/material/Dialog';
 import {DialogActions, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import {Link} from 'react-router-dom';
 
-import Timer from './Timer.tsx'
 
 const Subjects = ['国語', '数学', '英語', '理科', '社会'];
 
@@ -30,7 +29,7 @@ function SimpleDialog(props: SimpleDialogProps) {
 
     return (
 
-        <Dialog onClose={handleClose} open={open}>
+        <Dialog onClose={handleClose} open={open} >
             <DialogTitle>勉強する科目を選んでください</DialogTitle>
             <FormControl>
             <InputLabel id="subjects-label">科目</InputLabel>
@@ -47,7 +46,6 @@ function SimpleDialog(props: SimpleDialogProps) {
                 <MenuItem value="rika">理科</MenuItem>
                 <MenuItem value="shakai">社会</MenuItem>
             </Select>
-                <Timer />
                 <DialogActions>
                 <Button component={Link} to="/study">勉強を始める</Button>
                 </DialogActions>
