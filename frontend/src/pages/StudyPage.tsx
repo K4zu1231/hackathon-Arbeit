@@ -1,11 +1,15 @@
 import React, { useRef, useState, useCallback } from 'react';
-import Timer from '../components/Timer';
+import Timer from '../components/Timer'
+import Menu from '../components/Menu';
 import { FullscreenButton } from '../components/FullScreenButton';
 import { useCamera } from '../components/useCamera';
 import useWebSocket from '../components/useWebSocket';
 import './StudyPage.css';
 
-const StudyPage: React.FC = () => {
+const VideoStreamComponent: React.FC = () => {
+    const [timerVisible, setTimerVisible] = React.useState(true);
+
+
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const wsRef = useRef<WebSocket | null>(null);
@@ -44,7 +48,9 @@ const StudyPage: React.FC = () => {
             )}
 
             <div className="timer-overlay">
-                <Timer />
+                <Timer visible={timerVisible}
+                       setVisible={setTimerVisible} />
+                <Menu onShowTimer={() => setTimerVisible(true)} />
             </div>
 
             <FullscreenButton isFullscreen={isFullscreen} onClick={toggleFullscreen} />

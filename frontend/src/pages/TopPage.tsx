@@ -12,12 +12,13 @@ const App = () => {
 
             <Box
                 sx={{
+                    margin: 'auto',
                     position: "absolute",
                     inset: 0,
-                    backgroundImage: "url(../public/images/ooga1.png)",
+                    backgroundImage: "url(../public/images/oga.png)",
                     backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    opacity:0.2,
+                    backgroundPosition: "fixed",
+                    opacity:0.1,
                     zIndex: -0,
                 }}
             />
