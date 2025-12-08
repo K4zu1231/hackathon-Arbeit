@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import Timer from '../components/Timer'
 import Menu from '../components/Menu';
+import ChatBox from '../components/ChatBox';
 import { FullscreenButton } from '../components/FullScreenButton';
 import { useCamera } from '../components/useCamera';
 import useWebSocket from '../components/useWebSocket';
@@ -16,6 +17,8 @@ const VideoStreamComponent: React.FC = () => {
 
     const [showTeacher, setShowTeacher] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const [showChat, setShowChat] = useState(false);
 
     // WebSocket → WS接続して、showTeacher更新
     useWebSocket(wsRef, setShowTeacher);
@@ -50,10 +53,14 @@ const VideoStreamComponent: React.FC = () => {
             <div className="timer-overlay">
                 <Timer visible={timerVisible}
                        setVisible={setTimerVisible} />
-                <Menu onShowTimer={() => setTimerVisible(true)} />
+                <Menu 
+                onShowTimer={() => setTimerVisible(true)} 
+                onShowChat={() => setShowChat(true)}/>
             </div>
 
             <FullscreenButton isFullscreen={isFullscreen} onClick={toggleFullscreen} />
+
+            {showChat && <ChatBox onClose={() => setShowChat(false)} />}
         </div>
     );
 };

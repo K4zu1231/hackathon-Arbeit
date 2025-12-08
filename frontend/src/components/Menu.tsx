@@ -4,9 +4,10 @@ import {Button} from "@mui/material";
 
 type Props = {
     onShowTimer: () => void;
+    onShowChat: () => void;
 };
 
-export default function MouseRevealMenu({ onShowTimer }: Props) {
+export default function MouseRevealMenu({ onShowTimer, onShowChat }: Props) {
     const [visible, setVisible] = React.useState(false);
     const hideTimer = React.useRef<number | null>(null);
 
@@ -29,7 +30,8 @@ export default function MouseRevealMenu({ onShowTimer }: Props) {
 
     return (
         <div className={`mouse-menu ${visible ? 'show' : ''}`}>
-            <Button></Button>
+            <Button onClick={onShowChat} color="secondary" variant="contained">
+                チャット</Button>
             <Button onClick={onShowTimer} color="primary">
                 タイマー
             </Button>
