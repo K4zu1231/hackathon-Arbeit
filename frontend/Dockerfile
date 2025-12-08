@@ -1,5 +1,6 @@
 # frontend/Dockerfile
 FROM node:22-slim
+
 WORKDIR /app/frontend
 COPY package*.json ./
 

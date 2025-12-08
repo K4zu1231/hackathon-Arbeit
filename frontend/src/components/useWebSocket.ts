@@ -15,6 +15,7 @@ export default function useWebSocket(
             wsRef.current = ws; // TypeScriptエラーを修正
         };
 
+        
         // メッセージ受信時の処理
         ws.onmessage = (event: MessageEvent) => {
             try {
