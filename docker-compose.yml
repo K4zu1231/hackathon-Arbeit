@@ -2,19 +2,23 @@ version: "3.9"
 
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
     ports:
       - "8000:8000"
     volumes:
       - ./backend:/app
     container_name: backend-app
+    env_file:
+      - ./backend/.env
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
     ports:
       - "5173:5173"
     container_name: frontend-app
-    command: ["npx", "vite", "dev", "--host", "0.0.0.0"]
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
     volumes:
       - ./frontend:/app
       - /app/node_modules
