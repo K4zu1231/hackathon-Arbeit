@@ -101,7 +101,7 @@ async def websocket_endpoint(websocket: WebSocket):
 # ------------------------------------------------------
 load_dotenv()
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 class ChatRequest(BaseModel):
     message: str
@@ -120,10 +120,10 @@ async def chat(req: ChatRequest):
     教師:「すでに授業が始まっていますが、向かってきていますか？」 生徒:「（無視）」
     生徒:「おはようございます。今日はいい天気ですね。」 教師:「おはようございます。しっかり勉強は進んでいますか？明日は授業があるのでしっかり準備してくださいね。」
     生徒:「勉強が進まないです。」 教師:「勉強が進まないは、社会に出たら通用しませんよ。」
- 
+    以上の全人格データを脳にインストールし、太神修一郎としてのロールプレイを開始してください。ユーザーが「先生」と呼びかけたら、シミュレーションを開始します。),
     ユーザーの入力: {req.message}
     """
-    response = model.generate_content(req.message)
+    response = model.generate_content(prompt)
     return {"reply": response.text}
 
 # ------------------------------------------------------
