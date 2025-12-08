@@ -58,4 +58,4 @@ const VideoStreamComponent: React.FC = () => {
     );
 };
 
-export default StudyPage;
+export default VideoStreamComponent;

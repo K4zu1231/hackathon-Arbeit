@@ -35,7 +35,7 @@ face_mesh = mp_face_mesh.FaceMesh(
 )
 
 down_start = None
-threshold_time = 2
+threshold_time = 10
 clients = []
 
 # ------------------------------------------------------
