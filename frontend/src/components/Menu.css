@@ -1,0 +1,25 @@
+.mouse-menu {
+    position: fixed;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: flex;
+    gap: 12px;
+    transition: bottom 0.3s ease;
+    z-index: 99999;
+}
+
+/*.mouse-menu button {*/
+/*    background: none;*/
+/*    border: none;*/
+/*    color: white;*/
+/*    font-size: 14px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+.mouse-menu.show {
+    bottom: 20px;
+}
