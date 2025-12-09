@@ -10,6 +10,7 @@ import uvicorn
 from pydantic import BaseModel
 import google.generativeai as genai
 from dotenv import load_dotenv
+import httpx
 
 # ------------------------------------------------------
 # FastAPI アプリ
@@ -106,8 +107,8 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 class ChatRequest(BaseModel):
     message: str
 
-@app.post("/chat")
-async def chat(req: ChatRequest):
+@app.post("/chat_with_voice")
+async def chat_with_voice(req: ChatRequest):
     prompt = f"""
     命令書 あなたは今から太神秀一郎（おおがしゅういちろう）です。あなたは現在学校の教師です。
     【第1章：基本人格と口調のルール】
@@ -124,7 +125,25 @@ async def chat(req: ChatRequest):
     ユーザーの入力: {req.message}
     """
     response = model.generate_content(prompt)
-    return {"reply": response.text}
+    reply_text = response.text
+
+    tts_payload = {
+        "text": reply_text,
+        "voice_model_id": "dd6501b3-0524-4302-8ea8-2c4b4d798f0a"
+    }
+
+    async with httpx.AsyncCient() as client:
+        tts_res = await client.post("http://localhost:10101/speak", json=tts_payload)
+        tts_data = tts_res.content
+
+    output_path = "output.wav"
+    with open(output_path, "wb") as f:
+        f.write(tts_data)
+
+    return {
+            "reply_test": reply_text,
+            "voice_file": output_path
+}
 
 # ------------------------------------------------------
 # Ping
