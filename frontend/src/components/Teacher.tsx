@@ -1,22 +1,52 @@
-import React from 'react';
+import React, { useEffect, useRef } from "react";
+import './Teacher.css';
 
 interface Props {
-    showTeacher: boolean;
+    show: boolean;
+    videoSrc: string;
+    audioSrc: string;
 }
 
-export const TeacherOverlay: React.FC<Props> = ({ showTeacher }) => {
-    if (!showTeacher) return null;
+const TeacherOverlay: React.FC<Props> = ({ show, videoSrc, audioSrc }) => {
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    // 初回レンダリングで Audio を作る
+    useEffect(() => {
+        audioRef.current = new Audio(audioSrc);
+        audioRef.current.loop = true;
+
+        return () => {
+            // コンポーネントアンマウント時に音停止
+            audioRef.current?.pause();
+            audioRef.current = null;
+        };
+    }, [audioSrc]);
+
+    // show に応じて再生／停止
+    useEffect(() => {
+        if (!audioRef.current) return;
+
+        if (show) {
+            audioRef.current.play().catch(err => {
+                console.warn("自動再生がブロックされました:", err);
+            });
+        } else {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+    }, [show]);
+
+    if (!show) return null;
+
     return (
-        <img
-            src="teacher.png"
-            alt="Teacher"
-            style={{
-                position: 'absolute',
-                top: '20px',
-                left: '20px',
-                width: '200px',
-                zIndex: 10
-            }}
+        <video
+            src={videoSrc}
+            autoPlay
+            loop
+            muted
+            className="teacher-overlay"
         />
     );
 };
+
+export default TeacherOverlay;

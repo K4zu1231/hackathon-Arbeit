@@ -2,11 +2,17 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import {DialogActions, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
-import {Link} from 'react-router-dom';
+import {
+    DialogActions,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent
+} from "@mui/material";
+import { Link } from 'react-router-dom';
 
-
-const Subjects = ['国語', '数学', '英語', '理科', '社会'];
+const Subjects = ['国語', '数学', '英語', '理科', '社会', 'プログラミング', 'その他'];
 
 export interface SimpleDialogProps {
     open: boolean;
@@ -21,37 +27,47 @@ function SimpleDialog(props: SimpleDialogProps) {
 
     const handleChange = (event: SelectChangeEvent) => {
         setSubjects(event.target.value as string);
-    }
+    };
 
     const handleClose = () => {
         onClose(selectedValue);
     };
 
-    return (
+    const isDisabled = subjects === '';
 
-        <Dialog onClose={handleClose} open={open} >
+    return (
+        <Dialog onClose={handleClose} open={open}>
             <DialogTitle>勉強する科目を選んでください</DialogTitle>
-            <FormControl>
-            <InputLabel id="subjects-label">科目</InputLabel>
-            <Select
-                labelId="subjects-label"
-                id="subjects-select"
-                value={subjects}
-                label="subjects"
-                onChange={handleChange}
+
+            <FormControl sx={{ m: 2, minWidth: 200 }}>
+                <InputLabel id="subjects-label">科目</InputLabel>
+                <Select
+                    labelId="subjects-label"
+                    id="subjects-select"
+                    value={subjects}
+                    label="subjects"
+                    onChange={handleChange}
                 >
-                <MenuItem value="kokugo">国語</MenuItem>
-                <MenuItem value="sugaku">数学</MenuItem>
-                <MenuItem value="eigo">英語</MenuItem>
-                <MenuItem value="rika">理科</MenuItem>
-                <MenuItem value="shakai">社会</MenuItem>
-            </Select>
-                <DialogActions>
-                <Button component={Link} to="/study">勉強を始める</Button>
+                    <MenuItem value="kokugo">国語</MenuItem>
+                    <MenuItem value="sugaku">数学</MenuItem>
+                    <MenuItem value="eigo">英語</MenuItem>
+                    <MenuItem value="rika">理科</MenuItem>
+                    <MenuItem value="shakai">社会</MenuItem>
+                    <MenuItem value="program">プログラミング</MenuItem>
+                    <MenuItem value="others">その他</MenuItem>
+                </Select>
+
+                <DialogActions sx={{ mt: 2 }}>
+                    <Button
+                        component={Link}
+                        to={isDisabled ? "#" : `/study?subject=${subjects}`}
+                        disabled={isDisabled}
+                    >
+                        勉強を始める
+                    </Button>
                 </DialogActions>
             </FormControl>
         </Dialog>
-
     );
 }
 
@@ -70,7 +86,6 @@ export default function SimpleDialogDemo() {
 
     return (
         <div>
-
             <Button variant="contained" onClick={handleClickOpen}>
                 勉強する
             </Button>

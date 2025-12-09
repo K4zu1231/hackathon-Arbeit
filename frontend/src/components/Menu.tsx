@@ -5,9 +5,10 @@ import {Button} from "@mui/material";
 type Props = {
     onShowTimer: () => void;
     onShowChat: () => void;
+    onShowExit: () => void;
 };
 
-export default function MouseRevealMenu({ onShowTimer, onShowChat }: Props) {
+export default function MouseRevealMenu({ onShowTimer, onShowChat, onShowExit }: Props) {
     const [visible, setVisible] = React.useState(false);
     const hideTimer = React.useRef<number | null>(null);
 
@@ -35,7 +36,7 @@ export default function MouseRevealMenu({ onShowTimer, onShowChat }: Props) {
             <Button onClick={onShowTimer} color="primary">
                 タイマー
             </Button>
-            <Button variant="contained" color="error" >勉強をやめる</Button>
+            <Button variant="contained" color="error" onClick={onShowExit}>勉強をやめる</Button>
         </div>
     );
 }

@@ -45,3 +45,36 @@
     padding: 10px;
     border-radius: 50%;
 }
+.typewriter-container {
+    position: absolute;
+    bottom: 80px;
+    left: 40%;
+
+    max-width: 80%;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 20px;
+    border-radius: 16px;
+    text-align: center;
+
+    z-index: 999;
+    pointer-events: none;
+
+    opacity: 1;
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.typewriter-container.fade-out {
+    opacity: 0;
+    transform: translateY(100px);
+}
+
+.typewriter-cursor {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%,50%,100% { opacity: 1; }
+    25%,75% { opacity: 0; }
+}
