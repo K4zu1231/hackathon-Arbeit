@@ -1,5 +1,5 @@
-import React, { useRef, useState, useCallback } from 'react';
-import Timer from '../components/Timer'
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import Timer from '../components/Timer';
 import Menu from '../components/Menu';
 import ChatBox from '../components/ChatBox';
 import { FullscreenButton } from '../components/FullScreenButton';
@@ -18,21 +18,54 @@ export default function StudyPage() {
     const teacherLine = React.useMemo(() => {
         switch (subject) {
             case 'kokugo':
-                return '今日は文章読解を頑張ろうか。';
+                return '今日は文章読解を頑張りましょうか。';
             case 'sugaku':
-                return 'まずは基礎問題から解いてみよう。';
+                return 'まずは基礎問題から解いてみましょう。';
             case 'eigo':
-                return '発音を意識して音読してみよう。';
+                return '発音を意識して音読してみましょう。';
             case 'rika':
-                return '実験のイメージをしながら覚えよう。';
+                return '実験のイメージをしながら覚えましょう。';
             case 'shakai':
-                return '流れを理解すると覚えやすいぞ。';
+                return '時代の流れを理解すると覚えやすいですよ。';
+            case 'program':
+                return 'AIはアーティフィシャルインテリジェンスの略ですよ。';
             default:
-                return 'さあ、集中して勉強を始めよう。';
+                return 'さあ、集中して勉強を始めてください。';
         }
     }, [subject]);
 
-    const [timerVisible, setTimerVisible] = React.useState(true);
+    // 音声再生用
+    useEffect(() => {
+        let audioFile = '';
+        switch (subject) {
+            case 'kokugo':
+                audioFile = '/audio/kokugo.wav';
+                break;
+            case 'sugaku':
+                audioFile = '/audio/sugaku.wav';
+                break;
+            case 'eigo':
+                audioFile = '/audio/eigo.wav';
+                break;
+            case 'rika':
+                audioFile = '/audio/rika.wav';
+                break;
+            case 'shakai':
+                audioFile = '/audio/shakai.wav';
+                break;
+            case 'program':
+                audioFile = '/audio/program.wav';
+                break;
+            default:
+                audioFile = '/audio/default.wav';
+        }
+
+        if (audioFile) {
+            const audio = new Audio(audioFile);
+            audio.play().catch((err) => console.warn('自動再生できません:', err));
+        }
+    }, [subject]);
+    const [timerVisible, setTimerVisible] = useState(true);
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const wsRef = useRef<WebSocket | null>(null);
@@ -63,7 +96,6 @@ export default function StudyPage() {
             <div className="teacher-text-overlay">
                 <TypeWriter text={teacherLine} />
             </div>
-
 
             {showTeacher && (
                 <TeacherOverlay
