@@ -26,7 +26,8 @@ export default function PomodoroTimer({ visible, setVisible }: Props) {
     const [completedCycles, setCompletedCycles] = React.useState(0);
     const [settingsOpen, setSettingsOpen] = React.useState(false);
 
-    const alarmRef = React.useRef<HTMLAudioElement | null>(null);
+    const workAlarmRef = React.useRef<HTMLAudioElement | null>(null);
+    const breakAlarmRef = React.useRef<HTMLAudioElement | null>(null);
 
     // ドラッグ用
     const [pos, setPos] = React.useState({ x: 20, y: 20 });
@@ -61,17 +62,20 @@ export default function PomodoroTimer({ visible, setVisible }: Props) {
     }, [running]);
 
     // モード切替
+    // モード切替
     React.useEffect(() => {
         if (secondsLeft > 0) return;
 
-        if (alarmRef.current) {
-            try { alarmRef.current.currentTime = 0; } catch {}
-            alarmRef.current.play().catch(() => {});
-        }
-
         if (mode === 'work') {
+            // 作業終了 → 休憩開始の音
+            if (workAlarmRef.current) {
+                workAlarmRef.current.currentTime = 0;
+                workAlarmRef.current.play().catch(() => {});
+            }
+
             const nextCompleted = completedCycles + 1;
             setCompletedCycles(nextCompleted);
+
             if (nextCompleted % cyclesBeforeLong === 0) {
                 setMode('longBreak');
                 setSecondsLeft(longMin * 60);
@@ -80,10 +84,25 @@ export default function PomodoroTimer({ visible, setVisible }: Props) {
                 setSecondsLeft(shortMin * 60);
             }
         } else {
+            // 休憩終了 → 作業開始の音
+            if (breakAlarmRef.current) {
+                breakAlarmRef.current.currentTime = 0;
+                breakAlarmRef.current.play().catch(() => {});
+            }
+
             setMode('work');
             setSecondsLeft(workMin * 60);
         }
-    }, [secondsLeft, mode, completedCycles, cyclesBeforeLong, longMin, shortMin, workMin]);
+    }, [
+        secondsLeft,
+        mode,
+        completedCycles,
+        cyclesBeforeLong,
+        longMin,
+        shortMin,
+        workMin
+    ]);
+
 
     // Notification
     React.useEffect(() => {
@@ -146,10 +165,11 @@ export default function PomodoroTimer({ visible, setVisible }: Props) {
                     mode={mode}
                 />
 
-                <audio ref={alarmRef} src={beepDataUrl} />
+                <audio ref={workAlarmRef} src="/oga3.wav" preload="auto" />
+                <audio ref={breakAlarmRef} src="/oga4.wav" preload="auto" />
+
             </Box>
         </div>
     );
 }
 
-const beepDataUrl = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
